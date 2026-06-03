@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NovaPanel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Exo+2:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:#080010;color:#fff;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at top,#1a0030,#080010 60%);z-index:-2;}
+body::after{content:"";position:fixed;inset:0;background:linear-gradient(270deg,#ff6600,#ff0000,#ff6600);background-size:600% 600%;animation:bg 16s ease infinite;z-index:-1;opacity:.06;}
+@keyframes bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+header{text-align:center;padding:40px 10px 28px;background:linear-gradient(180deg,#110000,#08000f);border-bottom:2px solid #ff4500;box-shadow:0 4px 30px rgba(255,69,0,.3);position:relative;overflow:hidden;}
+.htitle{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:6px;text-transform:uppercase;background:linear-gradient(90deg,#ff9900,#ff4500,#ff0055);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hsub{font-size:12px;color:#ff9900;letter-spacing:3px;margin-top:4px;opacity:.8;}
+header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,100,0,.15),transparent);transform:skewX(-25deg);animation:shine 4s infinite linear;z-index:1;}
+@keyframes shine{0%{left:-150%}100%{left:150%}}
+
+.cats{display:flex;gap:10px;overflow-x:auto;padding:16px 12px;scrollbar-width:none;}
+.cats::-webkit-scrollbar{display:none;}
+.cats button{background:rgba(255,69,0,.08);border:1px solid rgba(255,69,0,.3);color:#ffa07a;padding:9px 18px;border-radius:8px;white-space:nowrap;cursor:pointer;font-family:'Exo 2',sans-serif;font-weight:700;font-size:13px;transition:.2s;flex-shrink:0;}
+.cats button.active,.cats button:hover{background:#ff4500;color:#fff;border-color:#ff9900;box-shadow:0 0 12px rgba(255,69,0,.5);}
+
+.grid{display:flex;flex-direction:column;gap:14px;padding:12px 12px 120px;}
+.card{background:linear-gradient(160deg,rgba(30,5,0,.85),rgba(10,0,20,.95));border:1px solid rgba(255,69,0,.2);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;}
+.card:hover{border-color:#ff4500;transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,69,0,.25);}
+.card-img{width:100%;display:block;object-fit:cover;}
+.card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;}
+.card-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;}
+.card-row{display:flex;align-items:center;gap:8px;}
+.price{color:#ff9900;font-size:18px;font-weight:900;}
+.dur-sel{flex:1;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.4);color:#ff9900;font-size:13px;font-weight:700;font-family:'Exo 2',sans-serif;padding:8px 10px;border-radius:8px;cursor:pointer;-webkit-appearance:none;appearance:none;}
+.dur-sel:focus{outline:none;border-color:#ff4500;}
+.add-btn{padding:9px 16px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;font-weight:700;font-family:'Exo 2',sans-serif;cursor:pointer;font-size:13px;white-space:nowrap;transition:opacity .2s,transform .1s;flex-shrink:0;}
+.add-btn:active{transform:scale(.95);}
+.add-btn:hover{opacity:.85;}
+
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:3px;color:#ff9900;padding:0 15px;margin-top:35px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-title::before{content:"";display:inline-block;width:4px;height:18px;background:#ff4500;border-radius:2px;}
+.feat-grid{display:flex;flex-direction:column;gap:12px;padding:0 12px;}
+.feat{background:rgba(255,69,0,.04);border:1px solid rgba(255,69,0,.12);padding:14px;border-radius:10px;}
+.feat h4{color:#ff9900;font-size:15px;margin-bottom:4px;}
+.feat p{color:#94a3b8;font-size:13px;line-height:1.5;}
+.reviews{display:flex;flex-direction:column;gap:12px;padding:0 12px;}
+.rev{background:rgba(255,69,0,.04);border-left:3px solid #ff4500;padding:12px;border-radius:0 10px 10px 0;}
+.rev-user{font-size:13px;color:#ff9900;font-weight:700;margin-bottom:4px;}
+.rev-text{font-size:12px;color:#cbd5e1;font-style:italic;}
+.faq{padding:0 12px 20px;}
+.faq-item{background:rgba(255,69,0,.03);padding:12px;border-radius:8px;margin-bottom:10px;border:1px solid rgba(255,69,0,.1);}
+.faq-q{font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;}
+.faq-a{font-size:12px;color:#94a3b8;}
+
+.cart-fab{position:fixed;bottom:24px;left:20px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#ff4500,#ff0055);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:9000;box-shadow:0 4px 20px rgba(255,69,0,.6);}
+.cart-fab-badge{position:absolute;top:-4px;right:-4px;background:#ffcc00;color:#000;font-size:11px;font-weight:900;min-width:18px;height:18px;padding:0 3px;border-radius:50px;display:none;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;}
+.cart-fab-badge.on{display:flex;}
+.wa-fab{position:fixed;bottom:24px;right:20px;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;color:#fff;z-index:9000;box-shadow:0 4px 20px rgba(37,211,102,.6);}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:.3s;z-index:9001;backdrop-filter:blur(4px);}
+.overlay.on{opacity:1;pointer-events:auto;}
+.cart{position:fixed;bottom:-100%;left:0;width:100%;height:85%;background:rgba(8,0,16,.98);border-top:3px solid #ff4500;border-radius:25px 25px 0 0;transition:.4s cubic-bezier(.22,1,.36,1);padding:20px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;z-index:9002;}
+.cart.on{bottom:0;}
+.cart-hdr{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:10px;margin-bottom:14px;}
+.cart-hdr h3{font-family:'Rajdhani',sans-serif;font-size:20px;color:#ff9900;letter-spacing:2px;}
+.cart-close{cursor:pointer;font-size:22px;color:#ff2b5c;}
+.cart-info{background:rgba(255,69,0,.05);border:1px dashed rgba(255,150,0,.3);padding:12px;border-radius:10px;margin-bottom:12px;font-size:13px;}
+.ci-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.ci-row:last-child{margin-bottom:0;}
+.ci-label{color:#ff9900;font-weight:700;}
+.ci-val{color:#fff;font-family:monospace;font-size:14px;}
+.clear-btn{background:rgba(255,43,92,.1);border:1px solid rgba(255,43,92,.4);color:#ff2b5c;padding:8px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;text-align:center;margin-bottom:14px;transition:.2s;}
+.clear-btn:hover{background:#ff2b5c;color:#fff;}
+#cartList{flex:1;overflow-y:auto;margin-bottom:14px;}
+.cart-item{background:rgba(255,69,0,.07);border:1px solid rgba(255,69,0,.15);padding:12px;margin-bottom:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+.del-btn{background:#ff2b5c;border:none;padding:6px 10px;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-weight:700;}
+.cart-foot{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);}
+#total{font-size:18px;font-weight:900;color:#ff9900;}
+.pay-btn{background:linear-gradient(90deg,#ff4500,#ff0055);border:none;padding:12px 22px;border-radius:10px;color:#fff;font-weight:700;font-family:'Exo 2',sans-serif;cursor:pointer;}
+.modal{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);}
+.modal.on{display:flex;}
+.modal-box{background:#120020;border:1px solid #ff4500;border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:90%;}
+.modal-box .icon{font-size:32px;margin-bottom:10px;}
+.modal-box h4{font-family:'Rajdhani',sans-serif;font-size:18px;color:#ff9900;margin-bottom:8px;}
+.modal-box p{font-size:13px;color:#94a3b8;margin-bottom:20px;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:10px;border-radius:8px;font-family:'Exo 2',sans-serif;font-weight:700;cursor:pointer;}
+.modal-cancel{border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff;}
+.modal-ok{border:none;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;}
+.fly{position:fixed;font-size:24px;z-index:9999;pointer-events:none;}
+@keyframes cartShake{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.35) rotate(-12deg)}50%{transform:scale(1.2) rotate(9deg)}75%{transform:scale(1.1) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="htitle">NovaPanel</div>
+  <div class="hsub">Paneles · Archivos · Herramientas Gaming</div>
+</header>
+
+<div class="cats">
+  <button class="active" onclick="filterCat('all',this)">Todos</button>
+  <button onclick="filterCat('Paneles',this)">🖥️ Paneles</button>
+  <button onclick="filterCat('Archivos',this)">📁 Archivos</button>
+  <button onclick="filterCat('Otros',this)">📦 Otros</button>
+</div>
+
+<div class="grid" id="grid">
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="drip.jpg" alt="Drip Client">
+    <div class="card-body">
+      <div class="card-name">Drip Client</div>
+      <div class="card-row">
+        <select class="dur-sel" id="drip">
+          <option value="2.00">1 día — $2 USD / $4.000 ARS</option>
+          <option value="4.50">3 días — $4.50 USD / $8.000 ARS</option>
+          <option value="8.00">7 días — $8 USD / $12.000 ARS</option>
+          <option value="20.00">30 días — $20 USD / $29.000 ARS</option>
+        </select>
+        <button class="add-btn" onclick="addDur('Drip Client','drip',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="hg.jpg" alt="HG Cheats">
+    <div class="card-body">
+      <div class="card-name">HG Cheats</div>
+      <div class="card-row">
+        <select class="dur-sel" id="hg">
+          <option value="3.00">1 día — $3 USD / $5.000 ARS</option>
+          <option value="12.00">10 días — $12 USD / $18.000 ARS</option>
+          <option value="25.00">30 días — $25 USD / $35.000 ARS</option>
+        </select>
+        <button class="add-btn" onclick="addDur('HG Cheats','hg',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="flourite.jpg" alt="Flourite">
+    <div class="card-body">
+      <div class="card-name">Flourite</div>
+      <div class="card-row">
+        <select class="dur-sel" id="flourite">
+          <option value="7.00">1 día — $7 USD / $10.000 ARS</option>
+          <option value="22.00">7 días — $22 USD / $31.500 ARS</option>
+          <option value="35.00">30 días — $35 USD / $50.000 ARS</option>
+        </select>
+        <button class="add-btn" onclick="addDur('Flourite','flourite',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Otros">
+    <img class="card-img" src="certif.jpg" alt="Certificado iPhone">
+    <div class="card-body">
+      <div class="card-name">Certificado iPhone</div>
+      <div class="card-row">
+        <span class="price">$5.00</span>
+        <button class="add-btn" onclick="add('Certificado iPhone',5.00,this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="monite.jpg" alt="Monite Cheats Pro">
+    <div class="card-body">
+      <div class="card-name">Monite Cheats Pro</div>
+      <div class="card-row">
+        <select class="dur-sel" id="monite">
+          <option value="5.00">1 día — $5 USD / $7.500 ARS</option>
+          <option value="10.00">7 días — $10 USD / $14.500 ARS</option>
+          <option value="25.00">30 días — $25 USD / $36.000 ARS</option>
+        </select>
+        <button class="add-btn" onclick="addDur('Monite Cheats Pro','monite',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="cuban.jpg" alt="Cuban Mods">
+    <div class="card-body">
+      <div class="card-name">Cuban Mods</div>
+      <div class="card-row">
+        <select class="dur-sel" id="cuban">
+          <option value="0.50">1 día — $0.50</option>
+          <option value="2.00">7 días — $2.00</option>
+          <option value="4.00">30 días — $4.00</option>
+        </select>
+        <button class="add-btn" onclick="addDur('Cuban Mods','cuban',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Paneles">
+    <img class="card-img" src="pato2.jpg" alt="Pato Team Pro">
+    <div class="card-body">
+      <div class="card-name">Pato Team Pro</div>
+      <div class="card-row">
+        <select class="dur-sel" id="pato2">
+          <option value="4.00">1 día — $4 USD / $5.500 ARS</option>
+          <option value="9.00">7 días — $9 USD / $13.000 ARS</option>
+          <option value="25.00">30 días — $25 USD / $34.000 ARS</option>
+        </select>
+        <button class="add-btn" onclick="addDur('Pato Team Pro','pato2',this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Archivos">
+    <img class="card-img" src="holograma.jpg" alt="Holograma FF Max">
+    <div class="card-body">
+      <div class="card-name">Holograma FF Max</div>
+      <div class="card-row">
+        <span class="price">$30 USD / $43.000 ARS</span>
+        <button class="add-btn" onclick="add('Holograma FF Max (30 días)',30.00,this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="Otros">
+    <img class="card-img" src="numeros.jpg" alt="Nums. Virtuales EE.UU.">
+    <div class="card-body">
+      <div class="card-name">Nums. Virtuales EE.UU.</div>
+      <div class="card-row">
+        <span class="price">$10.00</span>
+        <button class="add-btn" onclick="add('Nums. Virtuales EE.UU.',10.00,this)">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="sec-title">¿Por qué elegirnos?</div>
+<div class="feat-grid">
+  <div class="feat"><h4>⚡ Entrega Inmediata</h4><p>Recibís tu producto al instante tras confirmar el pago por WhatsApp.</p></div>
+  <div class="feat"><h4>🔒 Pago 100% Seguro</h4><p>Nunca pedimos contraseña. Solo el alias tobias.mansilla.2007.</p></div>
+  <div class="feat"><h4>🛠️ Soporte 24/7</h4><p>Atención por WhatsApp ante cualquier consulta con tu pedido.</p></div>
+</div>
+
+<div class="sec-title">Opiniones</div>
+<div class="reviews">
+  <div class="rev"><div class="rev-user">@XSlayer_99</div><p class="rev-text">"El HG Cheats funciona perfecto hace 30 días sin problemas."</p></div>
+  <div class="rev"><div class="rev-user">@DevMobile_07</div><p class="rev-text">"Certificado iPhone en minutos. La mejor tienda del grupo."</p></div>
+</div>
+
+<div class="sec-title">Preguntas Frecuentes</div>
+<div class="faq">
+  <div class="faq-item"><div class="faq-q">¿Cómo recibo mi producto?</div><div class="faq-a">Confirmás el pago y te enviamos el acceso por WhatsApp de inmediato.</div></div>
+  <div class="faq-item"><div class="faq-q">¿Los productos tienen garantía?</div><div class="faq-a">Sí, soporte durante todo el período adquirido.</div></div>
+  <div class="faq-item"><div class="faq-q">¿Qué métodos de pago aceptan?</div><div class="faq-a">Transferencia o Mercado Pago al alias tobias.mansilla.2007, titular Tobias Mansilla.</div></div>
+  <div class="faq-item"><div class="faq-q">¿Android o iPhone?</div><div class="faq-a">Monite Cheats y Flourite son para iPhone. El resto para Android.</div></div>
+</div>
+
+<div class="cart-fab" id="cartFab" onclick="openCart()">
+  🛒
+  <span class="cart-fab-badge" id="badge">0</span>
+</div>
+<a class="wa-fab" href="https://wa.me/5491154141893" target="_blank">💬</a>
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<div class="modal" id="clearModal">
+  <div class="modal-box">
+    <div class="icon">🗑️</div>
+    <h4>¿Vaciar carrito?</h4>
+    <p>Se eliminarán todos los productos.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeClearModal()">Cancelar</button>
+      <button class="modal-ok" onclick="confirmClear()">Vaciar</button>
+    </div>
+  </div>
+</div>
+
+<div class="cart" id="cart">
+  <div class="cart-hdr">
+    <h3>🛒 NovaPanel</h3>
+    <span class="cart-close" onclick="closeCart()">✕</span>
+  </div>
+  <div class="cart-info">
+    <div class="ci-row"><span class="ci-label">Alias:</span><span class="ci-val">tobias.mansilla.2007</span></div>
+    <div class="ci-row"><span class="ci-label">Titular:</span><span class="ci-val">Tobias Mansilla</span></div>
+  </div>
+  <div class="clear-btn" onclick="openClearModal()">🗑️ Vaciar Carrito</div>
+  <div id="cartList"></div>
+  <div class="cart-foot">
+    <div id="total">Total: $0</div>
+    <button class="pay-btn" onclick="sendOrder()">Pedir por WhatsApp 💬</button>
+  </div>
+</div>
+
+<script>
+let items=[], total=0;
+const cartEl=document.getElementById("cart");
+const overlay=document.getElementById("overlay");
+const fabEl=document.getElementById("cartFab");
+const badgeEl=document.getElementById("badge");
+
+function openCart(){cartEl.classList.add("on");overlay.classList.add("on");}
+function closeCart(){cartEl.classList.remove("on");overlay.classList.remove("on");}
+function openClearModal(){if(items.length===0)return;document.getElementById("clearModal").classList.add("on");}
+function closeClearModal(){document.getElementById("clearModal").classList.remove("on");}
+function confirmClear(){items=[];total=0;renderCart();closeClearModal();}
+
+function flyToCart(btn){
+  const br=btn.getBoundingClientRect();
+  const fr=fabEl.getBoundingClientRect();
+  const sx=br.left+br.width/2-13, sy=br.top+br.height/2-13;
+  const ex=fr.left+fr.width/2-13, ey=fr.top+fr.height/2-13;
+  const el=document.createElement("div");
+  el.className="fly";el.textContent="🛒";
+  el.style.cssText=`left:${sx}px;top:${sy}px;`;
+  document.body.appendChild(el);
+  el.animate([
+    {transform:"translate(0,0) scale(1)",opacity:1},
+    {transform:`translate(${(ex-sx)*.5}px,${(ey-sy)*.5-60}px) scale(.8)`,opacity:1,offset:.5},
+    {transform:`translate(${ex-sx}px,${ey-sy}px) scale(.1)`,opacity:0}
+  ],{duration:600,easing:"cubic-bezier(.25,.46,.45,.94)",fill:"forwards"})
+  .onfinish=()=>el.remove();
+}
+
+function shakeCart(){
+  fabEl.style.animation="none";
+  void fabEl.offsetWidth;
+  fabEl.style.animation="cartShake .45s ease";
+  fabEl.addEventListener("animationend",()=>fabEl.style.animation="",{once:true});
+}
+
+function add(name,price,btn){
+  items.push({name,price});
+  total=Math.round((total+price)*100)/100;
+  renderCart();flyToCart(btn);shakeCart();
+}
+
+function addDur(name,selId,btn){
+  const sel=document.getElementById(selId);
+  const price=parseFloat(sel.value);
+  const lbl=sel.options[sel.selectedIndex].text.split(" —")[0];
+  add(`${name} (${lbl})`,price,btn);
+}
+
+function removeItem(i){
+  total=Math.round((total-items[i].price)*100)/100;
+  items.splice(i,1);renderCart();
+}
+
+function renderCart(){
+  badgeEl.textContent=items.length;
+  items.length>0?badgeEl.classList.add("on"):badgeEl.classList.remove("on");
+  document.getElementById("cartList").innerHTML=items.map((it,i)=>
+    `<div class="cart-item"><span>${it.name} — $${it.price}</span><button class="del-btn" onclick="removeItem(${i})">✕</button></div>`
+  ).join("");
+  document.getElementById("total").textContent=`Total: $${total}`;
+}
+
+function filterCat(cat,btn){
+  document.querySelectorAll(".cats button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display=(cat==="all"||c.dataset.cat===cat)?"flex":"none";
+  });
+}
+
+function sendOrder(){
+  if(items.length===0){alert("El carrito está vacío.");return;}
+  let msg="🔥 *PEDIDO - NOVAPANEL* 🔥\n\n📦 *Productos:*\n";
+  items.forEach(it=>msg+=`• ${it.name} ($${it.price})\n`);
+  msg+=`\n💵 *Total:* $${total}\n\n📋 Indicame tu usuario o plataforma para procesar el pedido.`;
+  window.open(`https://wa.me/5491154141893?text=${encodeURIComponent(msg)}`,"_blank");
+}
+</script>
+</body>
+</html>
