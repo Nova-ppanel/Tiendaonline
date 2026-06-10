@@ -59,6 +59,9 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 .ci-row:last-child{margin-bottom:0}
 .ci-label{color:#ff9900;font-weight:700}
 .ci-val{color:#fff;font-family:monospace;font-size:14px}
+.moneda-sel{display:flex;gap:8px;margin-bottom:14px}
+.moneda-btn{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,69,0,.4);background:rgba(255,69,0,.08);color:#ffa07a;font-family:"Exo 2",sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-align:center;transition:.2s}
+.moneda-btn.active{background:#ff4500;color:#fff;border-color:#ff9900}
 .clear-btn{background:rgba(255,43,92,.1);border:1px solid rgba(255,43,92,.4);color:#ff2b5c;padding:8px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;text-align:center;margin-bottom:14px}
 #cartList{flex:1;overflow-y:auto;margin-bottom:14px}
 .cart-item{background:rgba(255,69,0,.07);border:1px solid rgba(255,69,0,.15);padding:12px;margin-bottom:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -230,10 +233,14 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="ci-row"><span class="ci-label">Alias:</span><span class="ci-val">tobias.mansilla.2007</span></div>
 <div class="ci-row"><span class="ci-label">Titular:</span><span class="ci-val">Tobias Mansilla</span></div>
 </div>
+<div class="moneda-sel">
+<div class="moneda-btn active" id="btnARS" onclick="setMoneda('ARS')">Argentina (ARS)</div>
+<div class="moneda-btn" id="btnUSD" onclick="setMoneda('USD')">Internacional (USD)</div>
+</div>
 <div class="clear-btn" onclick="abrirModal()">Vaciar Carrito</div>
 <div id="cartList"></div>
 <div class="cart-foot">
-<div id="total">Total: $0 USD</div>
+<div id="total">Total: $0</div>
 <button class="pay-btn" onclick="enviarPedido()">Pedir por WhatsApp</button>
 </div>
 </div>
@@ -241,7 +248,15 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 var items = [];
 var totalUSD = 0;
 var totalARS = 0;
+var moneda = "ARS";
 
+function setMoneda(m) {
+  moneda = m;
+  document.getElementById("btnARS").classList.remove("active");
+  document.getElementById("btnUSD").classList.remove("active");
+  document.getElementById("btn" + m).classList.add("active");
+  renderizar();
+}
 function abrirCarrito() {
   document.getElementById("cart").classList.add("on");
   document.getElementById("overlay").classList.add("on");
@@ -258,11 +273,8 @@ function cerrarModal() {
   document.getElementById("modalVaciar").classList.remove("on");
 }
 function vaciarConfirm() {
-  items = [];
-  totalUSD = 0;
-  totalARS = 0;
-  renderizar();
-  cerrarModal();
+  items = []; totalUSD = 0; totalARS = 0;
+  renderizar(); cerrarModal();
 }
 function volar(btn) {
   var br = btn.getBoundingClientRect();
@@ -274,8 +286,8 @@ function volar(btn) {
   el.style.left = (br.left + br.width / 2 - 13) + "px";
   el.style.top = (br.top + br.height / 2 - 13) + "px";
   document.body.appendChild(el);
-  var dx = fr.left + fr.width / 2 - 13 - (br.left + br.width / 2 - 13);
-  var dy = fr.top + fr.height / 2 - 13 - (br.top + br.height / 2 - 13);
+  var dx = (fr.left + fr.width / 2 - 13) - (br.left + br.width / 2 - 13);
+  var dy = (fr.top + fr.height / 2 - 13) - (br.top + br.height / 2 - 13);
   el.animate([
     {transform:"translate(0,0) scale(1)",opacity:1},
     {transform:"translate("+(dx*.5)+"px,"+(dy*.5-60)+"px) scale(.8)",opacity:1,offset:.5},
@@ -294,15 +306,13 @@ function agregar(nombre, selId, btn) {
   items.push({nombre: nombre + " (" + dur + ")", usd: usd, ars: ars});
   totalUSD = Math.round((totalUSD + usd) * 100) / 100;
   totalARS += ars;
-  renderizar();
-  volar(btn);
+  renderizar(); volar(btn);
 }
 function agregarFijo(nombre, usd, ars, btn) {
   items.push({nombre: nombre, usd: usd, ars: ars});
   totalUSD = Math.round((totalUSD + usd) * 100) / 100;
   totalARS += ars;
-  renderizar();
-  volar(btn);
+  renderizar(); volar(btn);
 }
 function eliminar(i) {
   totalUSD = Math.round((totalUSD - items[i].usd) * 100) / 100;
@@ -317,18 +327,12 @@ function renderizar() {
   var html = "";
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
-    var arsStr = it.ars > 0 ? " / $" + it.ars.toLocaleString("es-AR") + " ARS" : "";
-    html += '<div class="cart-item">';
-    html += '<div class="cart-item-info">';
-    html += '<div class="cart-item-name">' + it.nombre + '</div>';
-    html += '<div class="cart-item-price">$' + it.usd + ' USD' + arsStr + '</div>';
-    html += '</div>';
-    html += '<button class="del-btn" onclick="eliminar(' + i + ')">X</button>';
-    html += '</div>';
+    var precio = moneda === "ARS" && it.ars > 0 ? "$" + it.ars.toLocaleString("es-AR") + " ARS" : "$" + it.usd + " USD";
+    html += '<div class="cart-item"><div class="cart-item-info"><div class="cart-item-name">' + it.nombre + '</div><div class="cart-item-price">' + precio + '</div></div><button class="del-btn" onclick="eliminar(' + i + ')">X</button></div>';
   }
   document.getElementById("cartList").innerHTML = html;
-  var arsTotal = totalARS > 0 ? " / $" + totalARS.toLocaleString("es-AR") + " ARS" : "";
-  document.getElementById("total").textContent = "Total: $" + totalUSD + " USD" + arsTotal;
+  var tot = moneda === "ARS" && totalARS > 0 ? "$" + totalARS.toLocaleString("es-AR") + " ARS" : "$" + totalUSD + " USD";
+  document.getElementById("total").textContent = "Total: " + tot;
 }
 function filtrar(cat, btn) {
   var btns = document.querySelectorAll(".cats button");
@@ -341,14 +345,15 @@ function filtrar(cat, btn) {
 }
 function enviarPedido() {
   if (items.length === 0) { alert("El carrito esta vacio."); return; }
-  var msg = "PEDIDO - NOVAPANEL\n\nProductos:\n";
+  var paisStr = moneda === "ARS" ? "Argentina - Pesos ARS" : "Internacional - Dolares USD";
+  var msg = "PEDIDO - NOVAPANEL\n\nModalidad de pago: " + paisStr + "\n\nProductos:\n";
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
-    var arsStr = it.ars > 0 ? " / $" + it.ars.toLocaleString("es-AR") + " ARS" : "";
-    msg += "- " + it.nombre + " ($" + it.usd + " USD" + arsStr + ")\n";
+    var precio = moneda === "ARS" && it.ars > 0 ? "$" + it.ars.toLocaleString("es-AR") + " ARS" : "$" + it.usd + " USD";
+    msg += "- " + it.nombre + " (" + precio + ")\n";
   }
-  var arsTotal = totalARS > 0 ? " / $" + totalARS.toLocaleString("es-AR") + " ARS" : "";
-  msg += "\nTotal: $" + totalUSD + " USD" + arsTotal + "\n\nIndicame tu usuario o plataforma.";
+  var tot = moneda === "ARS" && totalARS > 0 ? "$" + totalARS.toLocaleString("es-AR") + " ARS" : "$" + totalUSD + " USD";
+  msg += "\nTotal: " + tot + "\n\nIndicame tu usuario o plataforma.";
   window.open("https://wa.me/5491154141893?text=" + encodeURIComponent(msg), "_blank");
 }
 </script>
