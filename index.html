@@ -82,6 +82,14 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 .modal-cancel{border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff}
 .modal-ok{border:none;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff}
 .fly{position:fixed;font-size:24px;z-index:9999;pointer-events:none}
+
+.qty-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qty-label{font-size:12px;color:#94a3b8;font-weight:700;}
+.qty-ctrl{display:flex;align-items:center;gap:0;}
+.qty-btn{width:34px;height:34px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qty-num{width:40px;height:34px;text-align:center;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.3);color:#ff9900;font-size:15px;font-weight:900;font-family:"Exo 2",sans-serif;border-radius:0;}
+.qty-total{font-size:13px;color:#ff9900;font-weight:900;margin-left:auto;}
+
 @keyframes cartShake{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.35) rotate(-12deg)}50%{transform:scale(1.2) rotate(9deg)}75%{transform:scale(1.1) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
 </style>
 </head>
@@ -103,12 +111,20 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Drip Client</div>
 <div class="card-row">
 <select class="dur-sel" id="s1">
-<option value="1.6,3200">1 dia - $1.60 USD / $3.200 ARS</option>
-<option value="3.6,6400">3 dias - $3.60 USD / $6.400 ARS</option>
-<option value="8,11200">7 dias - $8 USD / $11.200 ARS</option>
-<option value="16,23200">30 dias - $16 USD / $23.200 ARS</option>
+<option value="2.08.3000">1 dia - $2.08 USD / $3.000 ARS</option>
+<option value="4.16.6000">3 dias - $4.16 USD / $6.000 ARS</option>
+<option value="9.36.14000">7 dias - $9.36 USD / $14.000 ARS</option>
+<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('Drip Client','s1',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('Drip Client','s1','s1_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s1_qty',-1)">-</button>
+<input class="qty-num" id="s1_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s1_qty',1)">+</button>
+</div>
 </div></div></div>
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="hg.jpg" alt="HG Cheats">
@@ -116,11 +132,19 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">HG Cheats</div>
 <div class="card-row">
 <select class="dur-sel" id="s2">
-<option value="2.4,4000">1 dia - $2.40 USD / $4.000 ARS</option>
-<option value="9.6,14400">10 dias - $9.60 USD / $14.400 ARS</option>
-<option value="20,28000">30 dias - $20 USD / $28.000 ARS</option>
+<option value="1.92.3000">1 dia - $1.92 USD / $3.000 ARS</option>
+<option value="7.68.11500">10 dias - $7.68 USD / $11.500 ARS</option>
+<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('HG Cheats','s2',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('HG Cheats','s2','s2_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s2_qty',-1)">-</button>
+<input class="qty-num" id="s2_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s2_qty',1)">+</button>
+</div>
 </div></div></div>
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="flourite.jpg" alt="Flourite">
@@ -128,19 +152,27 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Flourite</div>
 <div class="card-row">
 <select class="dur-sel" id="s3">
-<option value="7,10000">1 dia - $7 USD / $10.000 ARS</option>
-<option value="22,31500">7 dias - $22 USD / $31.500 ARS</option>
-<option value="35,50000">30 dias - $35 USD / $50.000 ARS</option>
+<option value="5.6.8500">1 dia - $5.60 USD / $8.500 ARS</option>
+<option value="17.6.26500">7 dias - $17.60 USD / $26.500 ARS</option>
+<option value="28.42000">30 dias - $28 USD / $42.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('Flourite','s3',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('Flourite','s3','s3_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s3_qty',-1)">-</button>
+<input class="qty-num" id="s3_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s3_qty',1)">+</button>
+</div>
 </div></div></div>
 <div class="card" data-cat="Otros">
 <img class="card-img" src="certif.jpg" alt="Certificado iPhone">
 <div class="card-body">
 <div class="card-name">Certificado iPhone</div>
 <div class="card-row">
-<span class="price">$10 USD</span>
-<button class="add-btn" onclick="agregarFijo('Certificado iPhone',10,0,this)">+ Agregar</button>
+<span class="price">$10 USD / $15.000 ARS</span>
+<button class="add-btn" onclick="agregarFijo('Certificado iPhone',10,15000,this)">+ Agregar</button>
 </div></div></div>
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="monite.jpg" alt="Monite Cheats Pro">
@@ -148,11 +180,19 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Monite Cheats Pro</div>
 <div class="card-row">
 <select class="dur-sel" id="s4">
-<option value="5,7500">1 dia - $5 USD / $7.500 ARS</option>
-<option value="10,14500">7 dias - $10 USD / $14.500 ARS</option>
-<option value="25,36000">30 dias - $25 USD / $36.000 ARS</option>
+<option value="4.6000">1 dia - $4 USD / $6.000 ARS</option>
+<option value="8.12000">7 dias - $8 USD / $12.000 ARS</option>
+<option value="20.30000">30 dias - $20 USD / $30.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('Monite Cheats Pro','s4',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('Monite Cheats Pro','s4','s4_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s4_qty',-1)">-</button>
+<input class="qty-num" id="s4_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s4_qty',1)">+</button>
+</div>
 </div></div></div>
 
 <div class="card" data-cat="Paneles">
@@ -161,11 +201,19 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Cuban Mods</div>
 <div class="card-row">
 <select class="dur-sel" id="s7">
-<option value="3,4500">1 dia - $3 USD / $4.500 ARS</option>
-<option value="10,12000">7 dias - $10 USD / $12.000 ARS</option>
-<option value="20,24000">30 dias - $20 USD / $24.000 ARS</option>
+<option value="2.8.4000">1 dia - $2.80 USD / $4.000 ARS</option>
+<option value="9.36.14000">7 dias - $9.36 USD / $14.000 ARS</option>
+<option value="14.4.21500">30 dias - $14.40 USD / $21.500 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('Cuban Mods','s7',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('Cuban Mods','s7','s7_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s7_qty',-1)">-</button>
+<input class="qty-num" id="s7_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s7_qty',1)">+</button>
+</div>
 </div></div></div>
 
 <div class="card" data-cat="Paneles">
@@ -174,27 +222,34 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Pato Team Pro</div>
 <div class="card-row">
 <select class="dur-sel" id="s6">
-<option value="3.2,4400">1 dia - $3.20 USD / $4.400 ARS</option>
-<option value="8.8,12000">7 dias - $8.80 USD / $12.000 ARS</option>
-<option value="20,27200">30 dias - $20 USD / $27.200 ARS</option>
+<option value="7.04.10500">7 dias - $7.04 USD / $10.500 ARS</option>
+<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregar('Pato Team Pro','s6',this)">+ Agregar</button>
+<button class="add-btn" onclick="agregarCant('Pato Team Pro','s6','s6_qty',this)">+ Agregar</button>
+</div>
+<div class="qty-row">
+<span class="qty-label">Cantidad:</span>
+<div class="qty-ctrl">
+<button class="qty-btn" onclick="cambiarQty('s6_qty',-1)">-</button>
+<input class="qty-num" id="s6_qty" type="number" value="1" min="1" max="10" readonly>
+<button class="qty-btn" onclick="cambiarQty('s6_qty',1)">+</button>
+</div>
 </div></div></div>
 <div class="card" data-cat="Archivos">
 <img class="card-img" src="holograma.jpg" alt="Holograma FF Max">
 <div class="card-body">
 <div class="card-name">Holograma FF Max</div>
 <div class="card-row">
-<span class="price">$30 USD / $43.000 ARS</span>
-<button class="add-btn" onclick="agregarFijo('Holograma FF Max 30 dias',30,43000,this)">+ Agregar</button>
+<span class="price">$30 USD / $45.000 ARS</span>
+<button class="add-btn" onclick="agregarFijo('Holograma FF Max 30 dias',30,45000,this)">+ Agregar</button>
 </div></div></div>
 <div class="card" data-cat="Otros">
 <img class="card-img" src="numeros.jpg" alt="Nums. Virtuales EE.UU.">
 <div class="card-body">
 <div class="card-name">Nums. Virtuales EE.UU.</div>
 <div class="card-row">
-<span class="price">$10 USD</span>
-<button class="add-btn" onclick="agregarFijo('Nums. Virtuales EE.UU.',10,0,this)">+ Agregar</button>
+<span class="price">$10 USD / $15.000 ARS</span>
+<button class="add-btn" onclick="agregarFijo('Nums. Virtuales EE.UU.',10,15000,this)">+ Agregar</button>
 </div></div></div>
 </div>
 <div class="sec-title">Por que elegirnos?</div>
@@ -253,6 +308,14 @@ var totalUSD = 0;
 var totalARS = 0;
 var moneda = "ARS";
 
+function cambiarQty(qtyId, delta) {
+  var inp = document.getElementById(qtyId);
+  var val = parseInt(inp.value) + delta;
+  if (val < 1) val = 1;
+  if (val > 10) val = 10;
+  inp.value = val;
+}
+
 function setMoneda(m) {
   moneda = m;
   document.getElementById("btnARS").classList.remove("active");
@@ -299,6 +362,20 @@ function volar(btn) {
   fab.style.animation = "none";
   void fab.offsetWidth;
   fab.style.animation = "cartShake .45s ease";
+}
+function agregarCant(nombre, selId, qtyId, btn) {
+  var sel = document.getElementById(selId);
+  var qty = parseInt(document.getElementById(qtyId).value);
+  var partes = sel.value.split(",");
+  var usd = parseFloat(partes[0]);
+  var ars = partes[1] ? parseInt(partes[1]) : 0;
+  var dur = sel.options[sel.selectedIndex].text.split(" - ")[0];
+  var totalItemUSD = Math.round(usd * qty * 100) / 100;
+  var totalItemARS = ars * qty;
+  items.push({nombre: nombre + " (" + dur + ")" + (qty > 1 ? " x" + qty : ""), usd: totalItemUSD, ars: totalItemARS});
+  totalUSD = Math.round((totalUSD + totalItemUSD) * 100) / 100;
+  totalARS += totalItemARS;
+  renderizar(); volar(btn);
 }
 function agregar(nombre, selId, btn) {
   var sel = document.getElementById(selId);
@@ -349,14 +426,23 @@ function filtrar(cat, btn) {
 function enviarPedido() {
   if (items.length === 0) { alert("El carrito esta vacio."); return; }
   var paisStr = moneda === "ARS" ? "Argentina - Pesos ARS" : "Internacional - Dolares USD";
-  var msg = "PEDIDO - NOVAPANEL\n\nModalidad de pago: " + paisStr + "\n\nProductos:\n";
+  var msg = "PEDIDO - NOVAPANEL
+
+Modalidad de pago: " + paisStr + "
+
+Productos:
+";
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
     var precio = moneda === "ARS" && it.ars > 0 ? "$" + it.ars.toLocaleString("es-AR") + " ARS" : "$" + it.usd + " USD";
-    msg += "- " + it.nombre + " (" + precio + ")\n";
+    msg += "- " + it.nombre + " (" + precio + ")
+";
   }
   var tot = moneda === "ARS" && totalARS > 0 ? "$" + totalARS.toLocaleString("es-AR") + " ARS" : "$" + totalUSD + " USD";
-  msg += "\nTotal: " + tot + "\n\nIndicame tu usuario o plataforma.";
+  msg += "
+Total: " + tot + "
+
+Indicame tu usuario o plataforma.";
   window.open("https://wa.me/5491154141893?text=" + encodeURIComponent(msg), "_blank");
 }
 </script>
