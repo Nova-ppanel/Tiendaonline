@@ -160,9 +160,14 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-body">
 <div class="card-name">Cuban Mods</div>
 <div class="card-row">
-<span class="price">$20 USD / $24.000 ARS</span>
-<button class="add-btn" onclick="agregarFijo('Cuban Mods',20,24000,this)">+ Agregar</button>
+<select class="dur-sel" id="s7">
+<option value="3,4500">1 dia - $3 USD / $4.500 ARS</option>
+<option value="10,12000">7 dias - $10 USD / $12.000 ARS</option>
+<option value="20,24000">30 dias - $20 USD / $24.000 ARS</option>
+</select>
+<button class="add-btn" onclick="agregar('Cuban Mods','s7',this)">+ Agregar</button>
 </div></div></div>
+
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="pato2.jpg" alt="Pato Team Pro">
 <div class="card-body">
