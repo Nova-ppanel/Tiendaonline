@@ -28,6 +28,11 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 .card-row{display:flex;align-items:center;gap:8px}
 .price{color:#ff9900;font-size:14px;font-weight:900}
 .dur-sel{flex:1;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.4);color:#ff9900;font-size:12px;font-weight:700;font-family:"Exo 2",sans-serif;padding:8px 6px;border-radius:8px;cursor:pointer;-webkit-appearance:none;appearance:none}
+.qty-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+.qty-label{font-size:12px;color:#94a3b8;font-weight:700}
+.qty-ctrl{display:flex;align-items:center;gap:4px}
+.qty-btn{width:32px;height:32px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;font-size:18px;font-weight:700;cursor:pointer;line-height:1}
+.qty-num{width:38px;height:32px;text-align:center;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.3);color:#ff9900;font-size:15px;font-weight:900;font-family:"Exo 2",sans-serif;border-radius:6px}
 .add-btn{padding:9px 14px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;font-weight:700;font-family:"Exo 2",sans-serif;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0}
 .sec-title{font-family:"Rajdhani",sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:3px;color:#ff9900;padding:0 15px;margin-top:35px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sec-title::before{content:"";display:inline-block;width:4px;height:18px;background:#ff4500;border-radius:2px}
@@ -59,9 +64,10 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 .ci-row:last-child{margin-bottom:0}
 .ci-label{color:#ff9900;font-weight:700}
 .ci-val{color:#fff;font-family:monospace;font-size:14px}
-.moneda-sel{display:flex;gap:8px;margin-bottom:14px}
+.moneda-sel{display:flex;gap:8px;margin-bottom:8px}
 .moneda-btn{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,69,0,.4);background:rgba(255,69,0,.08);color:#ffa07a;font-family:"Exo 2",sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-align:center;transition:.2s}
 .moneda-btn.active{background:#ff4500;color:#fff;border-color:#ff9900}
+.otra-moneda{text-align:center;font-size:11px;color:#94a3b8;margin-bottom:14px}
 .clear-btn{background:rgba(255,43,92,.1);border:1px solid rgba(255,43,92,.4);color:#ff2b5c;padding:8px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;text-align:center;margin-bottom:14px}
 #cartList{flex:1;overflow-y:auto;margin-bottom:14px}
 .cart-item{background:rgba(255,69,0,.07);border:1px solid rgba(255,69,0,.15);padding:12px;margin-bottom:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -82,14 +88,6 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 .modal-cancel{border:1px solid rgba(255,255,255,.15);background:transparent;color:#fff}
 .modal-ok{border:none;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff}
 .fly{position:fixed;font-size:24px;z-index:9999;pointer-events:none}
-
-.qty-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
-.qty-label{font-size:12px;color:#94a3b8;font-weight:700;}
-.qty-ctrl{display:flex;align-items:center;gap:0;}
-.qty-btn{width:34px;height:34px;border:none;border-radius:8px;background:linear-gradient(90deg,#ff4500,#ff0055);color:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.qty-num{width:40px;height:34px;text-align:center;background:rgba(255,69,0,.1);border:1px solid rgba(255,69,0,.3);color:#ff9900;font-size:15px;font-weight:900;font-family:"Exo 2",sans-serif;border-radius:0;}
-.qty-total{font-size:13px;color:#ff9900;font-weight:900;margin-left:auto;}
-
 @keyframes cartShake{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.35) rotate(-12deg)}50%{transform:scale(1.2) rotate(9deg)}75%{transform:scale(1.1) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
 </style>
 </head>
@@ -98,102 +96,114 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="htitle">NovaPanel</div>
 <div class="hsub">Paneles - Archivos - Herramientas Gaming</div>
 </header>
+
 <div class="cats">
-<button class="active" onclick="filtrar('all',this)">Todos</button>
-<button onclick="filtrar('Paneles',this)">Paneles</button>
-<button onclick="filtrar('Archivos',this)">Archivos</button>
-<button onclick="filtrar('Otros',this)">Otros</button>
+<button class="active" id="cat_all">Todos</button>
+<button id="cat_paneles">Paneles</button>
+<button id="cat_archivos">Archivos</button>
+<button id="cat_otros">Otros</button>
 </div>
+
 <div class="grid" id="grid">
+
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="drip.jpg" alt="Drip Client">
 <div class="card-body">
 <div class="card-name">Drip Client</div>
 <div class="card-row">
 <select class="dur-sel" id="s1">
-<option value="2.08.3000">1 dia - $2.08 USD / $3.000 ARS</option>
-<option value="4.16.6000">3 dias - $4.16 USD / $6.000 ARS</option>
-<option value="9.36.14000">7 dias - $9.36 USD / $14.000 ARS</option>
-<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
+<option value="2.08,3000">1 dia - $2.08 USD / $3.000 ARS</option>
+<option value="4.16,6000">3 dias - $4.16 USD / $6.000 ARS</option>
+<option value="9.36,14000">7 dias - $9.36 USD / $14.000 ARS</option>
+<option value="15.2,22800">30 dias - $15.20 USD / $22.800 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('Drip Client','s1','s1_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s1">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s1_qty',-1)">-</button>
-<input class="qty-num" id="s1_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s1_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s1">-</button>
+<input class="qty-num" id="qty_s1" type="text" value="1">
+<button class="qty-btn" id="qplus_s1">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
+
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="hg.jpg" alt="HG Cheats">
 <div class="card-body">
 <div class="card-name">HG Cheats</div>
 <div class="card-row">
 <select class="dur-sel" id="s2">
-<option value="1.92.3000">1 dia - $1.92 USD / $3.000 ARS</option>
-<option value="7.68.11500">10 dias - $7.68 USD / $11.500 ARS</option>
-<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
+<option value="1.92,2900">1 dia - $1.92 USD / $2.900 ARS</option>
+<option value="7.68,11500">10 dias - $7.68 USD / $11.500 ARS</option>
+<option value="15.2,22800">30 dias - $15.20 USD / $22.800 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('HG Cheats','s2','s2_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s2">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s2_qty',-1)">-</button>
-<input class="qty-num" id="s2_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s2_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s2">-</button>
+<input class="qty-num" id="qty_s2" type="text" value="1">
+<button class="qty-btn" id="qplus_s2">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
+
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="flourite.jpg" alt="Flourite">
 <div class="card-body">
 <div class="card-name">Flourite</div>
 <div class="card-row">
 <select class="dur-sel" id="s3">
-<option value="5.6.8500">1 dia - $5.60 USD / $8.500 ARS</option>
-<option value="17.6.26500">7 dias - $17.60 USD / $26.500 ARS</option>
-<option value="28.42000">30 dias - $28 USD / $42.000 ARS</option>
+<option value="5.6,8400">1 dia - $5.60 USD / $8.400 ARS</option>
+<option value="17.6,26400">7 dias - $17.60 USD / $26.400 ARS</option>
+<option value="28,42000">30 dias - $28 USD / $42.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('Flourite','s3','s3_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s3">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s3_qty',-1)">-</button>
-<input class="qty-num" id="s3_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s3_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s3">-</button>
+<input class="qty-num" id="qty_s3" type="text" value="1">
+<button class="qty-btn" id="qplus_s3">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
+
 <div class="card" data-cat="Otros">
 <img class="card-img" src="certif.jpg" alt="Certificado iPhone">
 <div class="card-body">
 <div class="card-name">Certificado iPhone</div>
 <div class="card-row">
 <span class="price">$10 USD / $15.000 ARS</span>
-<button class="add-btn" onclick="agregarFijo('Certificado iPhone',10,15000,this)">+ Agregar</button>
-</div></div></div>
+<button class="add-btn" id="btn_certif">+ Agregar</button>
+</div>
+</div></div>
+
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="monite.jpg" alt="Monite Cheats Pro">
 <div class="card-body">
 <div class="card-name">Monite Cheats Pro</div>
 <div class="card-row">
 <select class="dur-sel" id="s4">
-<option value="4.6000">1 dia - $4 USD / $6.000 ARS</option>
-<option value="8.12000">7 dias - $8 USD / $12.000 ARS</option>
-<option value="20.30000">30 dias - $20 USD / $30.000 ARS</option>
+<option value="4,6000">1 dia - $4 USD / $6.000 ARS</option>
+<option value="8,12000">7 dias - $8 USD / $12.000 ARS</option>
+<option value="20,30000">30 dias - $20 USD / $30.000 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('Monite Cheats Pro','s4','s4_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s4">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s4_qty',-1)">-</button>
-<input class="qty-num" id="s4_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s4_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s4">-</button>
+<input class="qty-num" id="qty_s4" type="text" value="1">
+<button class="qty-btn" id="qplus_s4">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
 
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="cuban.jpg" alt="Cuban Mods">
@@ -201,20 +211,21 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Cuban Mods</div>
 <div class="card-row">
 <select class="dur-sel" id="s7">
-<option value="2.8.4000">1 dia - $2.80 USD / $4.000 ARS</option>
-<option value="9.36.14000">7 dias - $9.36 USD / $14.000 ARS</option>
-<option value="14.4.21500">30 dias - $14.40 USD / $21.500 ARS</option>
+<option value="2.8,4200">1 dia - $2.80 USD / $4.200 ARS</option>
+<option value="9.36,14000">7 dias - $9.36 USD / $14.000 ARS</option>
+<option value="14.4,21600">30 dias - $14.40 USD / $21.600 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('Cuban Mods','s7','s7_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s7">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s7_qty',-1)">-</button>
-<input class="qty-num" id="s7_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s7_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s7">-</button>
+<input class="qty-num" id="qty_s7" type="text" value="1">
+<button class="qty-btn" id="qplus_s7">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
 
 <div class="card" data-cat="Paneles">
 <img class="card-img" src="pato2.jpg" alt="Pato Team Pro">
@@ -222,47 +233,56 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="card-name">Pato Team Pro</div>
 <div class="card-row">
 <select class="dur-sel" id="s6">
-<option value="7.04.10500">7 dias - $7.04 USD / $10.500 ARS</option>
-<option value="15.2.23000">30 dias - $15.20 USD / $23.000 ARS</option>
+<option value="7.04,10560">7 dias - $7.04 USD / $10.560 ARS</option>
+<option value="15.2,22800">30 dias - $15.20 USD / $22.800 ARS</option>
 </select>
-<button class="add-btn" onclick="agregarCant('Pato Team Pro','s6','s6_qty',this)">+ Agregar</button>
+<button class="add-btn" id="btn_s6">+ Agregar</button>
 </div>
 <div class="qty-row">
 <span class="qty-label">Cantidad:</span>
 <div class="qty-ctrl">
-<button class="qty-btn" onclick="cambiarQty('s6_qty',-1)">-</button>
-<input class="qty-num" id="s6_qty" type="number" value="1" min="1" max="10" readonly>
-<button class="qty-btn" onclick="cambiarQty('s6_qty',1)">+</button>
+<button class="qty-btn" id="qminus_s6">-</button>
+<input class="qty-num" id="qty_s6" type="text" value="1">
+<button class="qty-btn" id="qplus_s6">+</button>
 </div>
-</div></div></div>
+</div>
+</div></div>
+
 <div class="card" data-cat="Archivos">
 <img class="card-img" src="holograma.jpg" alt="Holograma FF Max">
 <div class="card-body">
 <div class="card-name">Holograma FF Max</div>
 <div class="card-row">
 <span class="price">$30 USD / $45.000 ARS</span>
-<button class="add-btn" onclick="agregarFijo('Holograma FF Max 30 dias',30,45000,this)">+ Agregar</button>
-</div></div></div>
+<button class="add-btn" id="btn_holograma">+ Agregar</button>
+</div>
+</div></div>
+
 <div class="card" data-cat="Otros">
 <img class="card-img" src="numeros.jpg" alt="Nums. Virtuales EE.UU.">
 <div class="card-body">
 <div class="card-name">Nums. Virtuales EE.UU.</div>
 <div class="card-row">
 <span class="price">$10 USD / $15.000 ARS</span>
-<button class="add-btn" onclick="agregarFijo('Nums. Virtuales EE.UU.',10,15000,this)">+ Agregar</button>
-</div></div></div>
+<button class="add-btn" id="btn_numeros">+ Agregar</button>
 </div>
+</div></div>
+
+</div>
+
 <div class="sec-title">Por que elegirnos?</div>
 <div class="feat-grid">
 <div class="feat"><h4>Entrega Inmediata</h4><p>Recibis tu producto al instante tras confirmar el pago por WhatsApp.</p></div>
 <div class="feat"><h4>Pago 100% Seguro</h4><p>Nunca pedimos contrasena. Alias: tobias.mansilla.2007</p></div>
 <div class="feat"><h4>Soporte 24/7</h4><p>Atencion por WhatsApp ante cualquier consulta.</p></div>
 </div>
+
 <div class="sec-title">Opiniones</div>
 <div class="reviews">
 <div class="rev"><div class="rev-user">@XSlayer_99</div><p class="rev-text">El HG Cheats funciona perfecto hace 30 dias sin problemas.</p></div>
 <div class="rev"><div class="rev-user">@DevMobile_07</div><p class="rev-text">Certificado iPhone en minutos. La mejor tienda del grupo.</p></div>
 </div>
+
 <div class="sec-title">Preguntas Frecuentes</div>
 <div class="faq">
 <div class="faq-item"><div class="faq-q">Como recibo mi producto?</div><div class="faq-a">Confirmas el pago y te enviamos el acceso por WhatsApp de inmediato.</div></div>
@@ -270,51 +290,136 @@ header::after{content:"";position:absolute;top:0;left:-150%;width:50%;height:100
 <div class="faq-item"><div class="faq-q">Que metodos de pago aceptan?</div><div class="faq-a">Transferencia o Mercado Pago al alias tobias.mansilla.2007, titular Tobias Mansilla.</div></div>
 <div class="faq-item"><div class="faq-q">Android o iPhone?</div><div class="faq-a">Monite Cheats y Flourite son para iPhone. El resto para Android.</div></div>
 </div>
-<div class="cart-fab" id="cartFab" onclick="abrirCarrito()">&#128722;<span class="cart-fab-badge" id="badge">0</span></div>
+
+<div class="cart-fab" id="cartFab">&#128722;<span class="cart-fab-badge" id="badge">0</span></div>
 <a class="wa-fab" href="https://wa.me/5491154141893" target="_blank">&#128172;</a>
-<div class="overlay" id="overlay" onclick="cerrarCarrito()"></div>
+<div class="overlay" id="overlay"></div>
+
 <div class="modal" id="modalVaciar">
 <div class="modal-box">
 <h4>Vaciar carrito?</h4>
 <p>Se eliminaran todos los productos.</p>
 <div class="modal-btns">
-<button class="modal-cancel" onclick="cerrarModal()">Cancelar</button>
-<button class="modal-ok" onclick="vaciarConfirm()">Vaciar</button>
+<button class="modal-cancel" id="btnCancelarVaciar">Cancelar</button>
+<button class="modal-ok" id="btnConfirmarVaciar">Vaciar</button>
 </div></div></div>
+
 <div class="cart" id="cart">
 <div class="cart-hdr">
 <h3>NovaPanel</h3>
-<span class="cart-close" onclick="cerrarCarrito()">X</span>
+<span class="cart-close" id="cartClose">X</span>
 </div>
 <div class="cart-info">
 <div class="ci-row"><span class="ci-label">Alias:</span><span class="ci-val">tobias.mansilla.2007</span></div>
 <div class="ci-row"><span class="ci-label">Titular:</span><span class="ci-val">Tobias Mansilla</span></div>
 </div>
 <div class="moneda-sel">
-<div class="moneda-btn active" id="btnARS" onclick="setMoneda('ARS')">Argentina (ARS)</div>
-<div class="moneda-btn" id="btnUSD" onclick="setMoneda('USD')">Internacional (USD)</div>
+<div class="moneda-btn active" id="btnARS">Argentina (ARS)</div>
+<div class="moneda-btn" id="btnUSD">Internacional (USD)</div>
 </div>
-<div style="text-align:center;font-size:11px;color:#94a3b8;margin-bottom:14px;">Si queres pagar con otra moneda, consulta por WhatsApp</div>
-<div class="clear-btn" onclick="abrirModal()">Vaciar Carrito</div>
+<div class="otra-moneda">Si queres pagar con otra moneda, consulta por WhatsApp</div>
+<div class="clear-btn" id="btnVaciar">Vaciar Carrito</div>
 <div id="cartList"></div>
 <div class="cart-foot">
 <div id="total">Total: $0</div>
-<button class="pay-btn" onclick="enviarPedido()">Pedir por WhatsApp</button>
+<button class="pay-btn" id="btnPagar">Pedir por WhatsApp</button>
 </div>
 </div>
+
 <script>
 var items = [];
 var totalUSD = 0;
 var totalARS = 0;
 var moneda = "ARS";
 
-function cambiarQty(qtyId, delta) {
-  var inp = document.getElementById(qtyId);
-  var val = parseInt(inp.value) + delta;
-  if (val < 1) val = 1;
-  if (val > 10) val = 10;
-  inp.value = val;
-}
+// Productos con selector
+var productosConSel = [
+  {btnId:"btn_s1", selId:"s1", qtyId:"qty_s1", nombre:"Drip Client"},
+  {btnId:"btn_s2", selId:"s2", qtyId:"qty_s2", nombre:"HG Cheats"},
+  {btnId:"btn_s3", selId:"s3", qtyId:"qty_s3", nombre:"Flourite"},
+  {btnId:"btn_s4", selId:"s4", qtyId:"qty_s4", nombre:"Monite Cheats Pro"},
+  {btnId:"btn_s7", selId:"s7", qtyId:"qty_s7", nombre:"Cuban Mods"},
+  {btnId:"btn_s6", selId:"s6", qtyId:"qty_s6", nombre:"Pato Team Pro"}
+];
+
+// Productos con precio fijo
+var productosFijos = [
+  {btnId:"btn_certif",    nombre:"Certificado iPhone",    usd:10,  ars:15000},
+  {btnId:"btn_holograma", nombre:"Holograma FF Max 30 dias", usd:30, ars:45000},
+  {btnId:"btn_numeros",   nombre:"Nums. Virtuales EE.UU.", usd:10, ars:15000}
+];
+
+// Qty buttons
+var qtyIds = ["qty_s1","qty_s2","qty_s3","qty_s4","qty_s7","qty_s6"];
+
+window.addEventListener("DOMContentLoaded", function() {
+
+  // Categorias
+  document.getElementById("cat_all").addEventListener("click", function() { filtrar("all", this); });
+  document.getElementById("cat_paneles").addEventListener("click", function() { filtrar("Paneles", this); });
+  document.getElementById("cat_archivos").addEventListener("click", function() { filtrar("Archivos", this); });
+  document.getElementById("cat_otros").addEventListener("click", function() { filtrar("Otros", this); });
+
+  // Carrito
+  document.getElementById("cartFab").addEventListener("click", abrirCarrito);
+  document.getElementById("cartClose").addEventListener("click", cerrarCarrito);
+  document.getElementById("overlay").addEventListener("click", cerrarCarrito);
+  document.getElementById("btnVaciar").addEventListener("click", abrirModal);
+  document.getElementById("btnCancelarVaciar").addEventListener("click", cerrarModal);
+  document.getElementById("btnConfirmarVaciar").addEventListener("click", vaciarConfirm);
+  document.getElementById("btnPagar").addEventListener("click", enviarPedido);
+
+  // Moneda
+  document.getElementById("btnARS").addEventListener("click", function() { setMoneda("ARS"); });
+  document.getElementById("btnUSD").addEventListener("click", function() { setMoneda("USD"); });
+
+  // Productos con selector
+  for (var i = 0; i < productosConSel.length; i++) {
+    (function(p) {
+      document.getElementById("qminus_" + p.selId).addEventListener("click", function() {
+        var inp = document.getElementById(p.qtyId);
+        var v = parseInt(inp.value) - 1;
+        if (v < 1) v = 1;
+        inp.value = v;
+      });
+      document.getElementById("qplus_" + p.selId).addEventListener("click", function() {
+        var inp = document.getElementById(p.qtyId);
+        var v = parseInt(inp.value) + 1;
+        if (v > 10) v = 10;
+        inp.value = v;
+      });
+      document.getElementById(p.btnId).addEventListener("click", function() {
+        var sel = document.getElementById(p.selId);
+        var qty = parseInt(document.getElementById(p.qtyId).value);
+        var partes = sel.value.split(",");
+        var usd = parseFloat(partes[0]);
+        var ars = partes[1] ? parseInt(partes[1]) : 0;
+        var dur = sel.options[sel.selectedIndex].text.split(" - ")[0];
+        var nombre = p.nombre + " (" + dur + ")" + (qty > 1 ? " x" + qty : "");
+        var totalUSDItem = Math.round(usd * qty * 100) / 100;
+        var totalARSItem = ars * qty;
+        items.push({nombre: nombre, usd: totalUSDItem, ars: totalARSItem});
+        totalUSD = Math.round((totalUSD + totalUSDItem) * 100) / 100;
+        totalARS += totalARSItem;
+        renderizar();
+        volar(document.getElementById(p.btnId));
+      });
+    })(productosConSel[i]);
+  }
+
+  // Productos fijos
+  for (var j = 0; j < productosFijos.length; j++) {
+    (function(p) {
+      document.getElementById(p.btnId).addEventListener("click", function() {
+        items.push({nombre: p.nombre, usd: p.usd, ars: p.ars});
+        totalUSD = Math.round((totalUSD + p.usd) * 100) / 100;
+        totalARS += p.ars;
+        renderizar();
+        volar(document.getElementById(p.btnId));
+      });
+    })(productosFijos[j]);
+  }
+});
 
 function setMoneda(m) {
   moneda = m;
@@ -343,8 +448,8 @@ function vaciarConfirm() {
   renderizar(); cerrarModal();
 }
 function volar(btn) {
-  var br = btn.getBoundingClientRect();
   var fab = document.getElementById("cartFab");
+  var br = btn.getBoundingClientRect();
   var fr = fab.getBoundingClientRect();
   var el = document.createElement("div");
   el.className = "fly";
@@ -363,37 +468,6 @@ function volar(btn) {
   void fab.offsetWidth;
   fab.style.animation = "cartShake .45s ease";
 }
-function agregarCant(nombre, selId, qtyId, btn) {
-  var sel = document.getElementById(selId);
-  var qty = parseInt(document.getElementById(qtyId).value);
-  var partes = sel.value.split(",");
-  var usd = parseFloat(partes[0]);
-  var ars = partes[1] ? parseInt(partes[1]) : 0;
-  var dur = sel.options[sel.selectedIndex].text.split(" - ")[0];
-  var totalItemUSD = Math.round(usd * qty * 100) / 100;
-  var totalItemARS = ars * qty;
-  items.push({nombre: nombre + " (" + dur + ")" + (qty > 1 ? " x" + qty : ""), usd: totalItemUSD, ars: totalItemARS});
-  totalUSD = Math.round((totalUSD + totalItemUSD) * 100) / 100;
-  totalARS += totalItemARS;
-  renderizar(); volar(btn);
-}
-function agregar(nombre, selId, btn) {
-  var sel = document.getElementById(selId);
-  var partes = sel.value.split(",");
-  var usd = parseFloat(partes[0]);
-  var ars = partes[1] ? parseInt(partes[1]) : 0;
-  var dur = sel.options[sel.selectedIndex].text.split(" - ")[0];
-  items.push({nombre: nombre + " (" + dur + ")", usd: usd, ars: ars});
-  totalUSD = Math.round((totalUSD + usd) * 100) / 100;
-  totalARS += ars;
-  renderizar(); volar(btn);
-}
-function agregarFijo(nombre, usd, ars, btn) {
-  items.push({nombre: nombre, usd: usd, ars: ars});
-  totalUSD = Math.round((totalUSD + usd) * 100) / 100;
-  totalARS += ars;
-  renderizar(); volar(btn);
-}
 function eliminar(i) {
   totalUSD = Math.round((totalUSD - items[i].usd) * 100) / 100;
   totalARS -= items[i].ars;
@@ -408,9 +482,15 @@ function renderizar() {
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
     var precio = moneda === "ARS" && it.ars > 0 ? "$" + it.ars.toLocaleString("es-AR") + " ARS" : "$" + it.usd + " USD";
-    html += '<div class="cart-item"><div class="cart-item-info"><div class="cart-item-name">' + it.nombre + '</div><div class="cart-item-price">' + precio + '</div></div><button class="del-btn" onclick="eliminar(' + i + ')">X</button></div>';
+    html += "<div class=\"cart-item\"><div class=\"cart-item-info\"><div class=\"cart-item-name\">" + it.nombre + "</div><div class=\"cart-item-price\">" + precio + "</div></div><button class=\"del-btn\" data-idx=\"" + i + "\">X</button></div>";
   }
   document.getElementById("cartList").innerHTML = html;
+  var delBtns = document.querySelectorAll(".del-btn");
+  for (var j = 0; j < delBtns.length; j++) {
+    delBtns[j].addEventListener("click", function() {
+      eliminar(parseInt(this.getAttribute("data-idx")));
+    });
+  }
   var tot = moneda === "ARS" && totalARS > 0 ? "$" + totalARS.toLocaleString("es-AR") + " ARS" : "$" + totalUSD + " USD";
   document.getElementById("total").textContent = "Total: " + tot;
 }
@@ -426,23 +506,14 @@ function filtrar(cat, btn) {
 function enviarPedido() {
   if (items.length === 0) { alert("El carrito esta vacio."); return; }
   var paisStr = moneda === "ARS" ? "Argentina - Pesos ARS" : "Internacional - Dolares USD";
-  var msg = "PEDIDO - NOVAPANEL
-
-Modalidad de pago: " + paisStr + "
-
-Productos:
-";
+  var msg = "PEDIDO - NOVAPANEL\n\nModalidad de pago: " + paisStr + "\n\nProductos:\n";
   for (var i = 0; i < items.length; i++) {
     var it = items[i];
     var precio = moneda === "ARS" && it.ars > 0 ? "$" + it.ars.toLocaleString("es-AR") + " ARS" : "$" + it.usd + " USD";
-    msg += "- " + it.nombre + " (" + precio + ")
-";
+    msg += "- " + it.nombre + " (" + precio + ")\n";
   }
   var tot = moneda === "ARS" && totalARS > 0 ? "$" + totalARS.toLocaleString("es-AR") + " ARS" : "$" + totalUSD + " USD";
-  msg += "
-Total: " + tot + "
-
-Indicame tu usuario o plataforma.";
+  msg += "\nTotal: " + tot + "\n\nIndicame tu usuario o plataforma.";
   window.open("https://wa.me/5491154141893?text=" + encodeURIComponent(msg), "_blank");
 }
 </script>
